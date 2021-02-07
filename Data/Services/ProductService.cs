@@ -25,7 +25,7 @@ namespace InventoryManager.API.Data.Services
 
         public async Task<Product> GetProduct(int productId)
         {
-            return await _appDbContext.Products.FirstOrDefaultAsync(x => x.IsDeleted != false && x.Id == productId);
+            return await _appDbContext.Products.FirstOrDefaultAsync(x => x.IsDeleted != true && x.Id == productId);
         }
 
         public async Task<List<Product>> GetProducts()
