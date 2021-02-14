@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
+using InventoryManager.API.Data.Dto.Product;
 using InventoryManager.API.Data.Models;
 
 namespace InventoryManager.API.Core.Validator
 {
-    public class ProductValidator : AbstractValidator<Product>
+    public class ProductValidator : AbstractValidator<RequestDto>
     {
         public ProductValidator()
         {

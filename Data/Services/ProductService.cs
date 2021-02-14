@@ -30,7 +30,7 @@ namespace InventoryManager.API.Data.Services
 
         public async Task<List<Product>> GetProducts()
         {
-            return await _appDbContext.Products.Where(x=>x.IsDeleted!=false).ToListAsync();
+            return await _appDbContext.Products.Where(x => x.IsDeleted != true).ToListAsync();
         }
 
 

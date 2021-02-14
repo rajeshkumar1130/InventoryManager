@@ -1,10 +1,7 @@
-using System.Text.Json.Serialization;
 using AutoMapper;
-using ElmahCore.Mvc;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,16 +29,12 @@ namespace InventoryManager.API
             services.AddTransient<IProductService, ProductService>();
             services.AddAutoMapper(typeof(Startup));
             services.AddCors();
-            services.AddElmah();
             services.SwaggerConfiguration();
             services.IdentityConfiguration(Configuration);
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("InventoryManagerConnection")));
-            services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0).AddJsonOptions(opts =>
-                {
-                    opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
+            services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+                
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -30,14 +30,13 @@ namespace InventoryManager.API.Controllers
         /// <summary>
         /// Get products list
         /// </summary>
-        /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<ProductDto>> Get()
+        public async Task<ActionResult<ResponseDto>> Get()
         {
             _logger.LogInfo("Getting all products");
 
             var products = await _productService.GetProducts();
-            var dto = _mapper.Map<List<ProductDto>>(products);
+            var dto = _mapper.Map<List<ResponseDto>>(products);
 
             _logger.LogInfo($"Returning {products.Count} products");
 
@@ -47,10 +46,8 @@ namespace InventoryManager.API.Controllers
         /// <summary>
         /// Get product details
         /// </summary>
-        /// <param name="productId">The model.</param>
-        /// <returns></returns>
         [HttpGet("{productId}")]
-        public async Task<ActionResult<ProductDto>> Get([FromRoute] int productId)
+        public async Task<ActionResult<ResponseDto>> Get([FromRoute] int productId)
         {
             _logger.LogInfo("Getting product by id");
 
@@ -58,7 +55,7 @@ namespace InventoryManager.API.Controllers
             if (product == null)
                 return NotFound();
 
-            var dto = _mapper.Map<ProductDto>(product);
+            var dto = _mapper.Map<ResponseDto>(product);
 
             _logger.LogInfo($"Returning product {product.Id}");
 
@@ -68,15 +65,15 @@ namespace InventoryManager.API.Controllers
         /// <summary>
         /// Add new product
         /// </summary>
-        /// <param name="product">The model.</param>
-        /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Product product)
+        public async Task<ActionResult> Post([FromBody] RequestDto request)
         {
             _logger.LogInfo("Creating new product");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var product = _mapper.Map<Product>(request);
 
             await _productService.AddProduct(product);
 
@@ -88,22 +85,23 @@ namespace InventoryManager.API.Controllers
         /// <summary>
         /// Update product
         /// </summary>
-        /// <param name="product">The model.</param>
-        /// <param name="productId"></param>
-        /// <returns></returns>
         [HttpPut("{productId}")]
-        public async Task<ActionResult> Put([FromBody] Product product, [FromRoute] int productId)
+        public async Task<ActionResult> Put([FromBody] RequestDto request, [FromRoute] int productId)
         {
             _logger.LogInfo($"Updating product id = {productId}");
+
+            var product = _mapper.Map<Product>(request);
 
             var result = await _productService.UpdateProduct(product, productId);
 
             if (result)
             {
+                _logger.LogInfo($"Updated product id = {productId}");
+
                 return Ok();
             }
 
-            _logger.LogInfo($"Updated product id = {productId}");
+            _logger.LogInfo($"Product not found product id = {productId}");
 
             return NotFound();
         }
@@ -111,8 +109,6 @@ namespace InventoryManager.API.Controllers
         /// <summary>
         /// Remove product
         /// </summary>
-        /// <param name="productId">Product id</param>
-        /// <returns></returns>
         [HttpDelete("{productId}")]
         public async Task<ActionResult<bool>> Delete([FromRoute] int productId)
         {

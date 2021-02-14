@@ -8,7 +8,8 @@ namespace InventoryManager.API.Core.Configuration
     {
         public AutoMapperProfile()
         {
-            CreateMap<Product, ProductDto>();
+            CreateMap<Product, ResponseDto>();
+            CreateMap<RequestDto, Product>();
         }
     }
 }
